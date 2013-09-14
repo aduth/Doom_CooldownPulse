@@ -179,9 +179,9 @@ function DCP:ADDON_LOADED(addon)
 end
 DCP:RegisterEvent("ADDON_LOADED")
 
-function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,spell,rank)
+function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,spell,rank,lineID,spellID)
     if (unit == "player") then
-        watching[spell] = {GetTime(),"spell",spell.."("..rank..")"}
+        watching[spell] = {GetTime(),"spell",spellID}
         if (not self:IsMouseEnabled()) then
             self:SetScript("OnUpdate", OnUpdate)
         end
@@ -198,7 +198,7 @@ function DCP:COMBAT_LOG_EVENT_UNFILTERED(...)
             if (index and not select(7,GetPetActionInfo(index))) then
                 watching[name] = {GetTime(),"pet",index}
             elseif (not index and name) then
-                watching[name] = {GetTime(),"spell",name}
+                watching[name] = {GetTime(),"spell",spellID}
             else
                 return
             end
