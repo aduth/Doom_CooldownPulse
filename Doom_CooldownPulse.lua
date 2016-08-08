@@ -197,9 +197,9 @@ function DCP:COMBAT_LOG_EVENT_UNFILTERED(...)
             local name = GetSpellInfo(spellID)
             local index = GetPetActionIndexByName(name)
             if (index and not select(7,GetPetActionInfo(index))) then
-                watching[name] = {GetTime(),"pet",index}
-            elseif (not index and name) then
-                watching[name] = {GetTime(),"spell",spellID}
+                watching[spellID] = {GetTime(),"pet",index}
+            elseif (not index and spellID) then
+                watching[spellID] = {GetTime(),"spell",spellID}
             else
                 return
             end
