@@ -11,7 +11,7 @@ local defaultsettings = {
     holdTime = 0,
     petOverlay = {1,1,1},
     ignoredSpells = "",
-	showSpellName = nil,
+    showSpellName = nil,
     x = UIParent:GetWidth()/2, 
     y = UIParent:GetHeight()/2 
 }
@@ -66,7 +66,7 @@ local function RefreshLocals()
     animScale = DCP_Saved.animScale
     iconSize = DCP_Saved.iconSize
     holdTime = DCP_Saved.holdTime
-	showSpellName = DCP_Saved.showSpellName
+    showSpellName = DCP_Saved.showSpellName
 
     ignoredSpells = { }
     for _,v in ipairs({strsplit(",",DCP_Saved.ignoredSpells)}) do
@@ -133,14 +133,14 @@ local function OnUpdate(_,update)
         if (runtimer > (fadeInTime + holdTime + fadeOutTime)) then
             tremove(animating,1)
             runtimer = 0
-			DCP.TextFrame:SetText(nil)
+            DCP.TextFrame:SetText(nil)
             DCPT:SetTexture(nil)
             DCPT:SetVertexColor(1,1,1)
         else
             if (not DCPT:GetTexture()) then
-				if (animating[1][3] ~= nil and showSpellName) then
-					DCP.TextFrame:SetText(animating[1][3])
-				end
+                if (animating[1][3] ~= nil and showSpellName) then
+                    DCP.TextFrame:SetText(animating[1][3])
+                end
                 DCPT:SetTexture(animating[1][1])
                 if animating[1][2] then
                     DCPT:SetVertexColor(unpack(DCP_Saved.petOverlay))
@@ -354,21 +354,21 @@ function DCP:CreateOptionsFrame()
                 DCP:SetHeight(DCP_Saved.iconSize) 
             end end)
     end
-	
-	local spellnametext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    
+    local spellnametext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     spellnametext:SetPoint("TOPLEFT","DCP_OptionsFrameSlider"..#sliders,"BOTTOMLEFT",-15,-25)
     spellnametext:SetText("Show spell name:")
-	
-	local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
+    
+    local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
     spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
-	spellnamecbt:SetChecked(DCP_Saved.showSpellName)
-	spellnamecbt:SetScript("OnClick", function(self) 
-		local newState = (self:GetChecked() == 1) or nil
-		self:SetChecked(newState)
-		DCP_Saved.showSpellName = newState
-		RefreshLocals()
-	end)
-	
+    spellnamecbt:SetChecked(DCP_Saved.showSpellName)
+    spellnamecbt:SetScript("OnClick", function(self) 
+        local newState = (self:GetChecked() == 1) or nil
+        self:SetChecked(newState)
+        DCP_Saved.showSpellName = newState
+        RefreshLocals()
+    end)
+    
     local ignoretext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     ignoretext:SetPoint("TOPLEFT",spellnametext,"BOTTOMLEFT",0,-10)
     ignoretext:SetText("Cooldowns to ignore:")
@@ -395,7 +395,7 @@ function DCP:CreateOptionsFrame()
     petcolorselect:SetPoint("LEFT",pettext,"RIGHT",5,-2)
     petcolorselect:SetWidth(20)
     petcolorselect:SetHeight(20)
-	petcolorselect:SetNormalTexture('Interface/ChatFrame/ChatFrameColorSwatch')
+    petcolorselect:SetNormalTexture('Interface/ChatFrame/ChatFrameColorSwatch')
     petcolorselect:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay))
     petcolorselect:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("Note: Use white if you don't want any overlay for pet cooldowns") end)
     petcolorselect:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
@@ -406,12 +406,12 @@ function DCP:CreateOptionsFrame()
         end)
     petcolorselect.swatchFunc = function(self) DCP_Saved.petOverlay={ColorPickerFrame:GetColorRGB()} petcolorselect:GetNormalTexture():SetVertexColor(ColorPickerFrame:GetColorRGB()) end
     petcolorselect.cancelFunc = function(self) DCP_Saved.petOverlay={self.r,self.g,self.b} petcolorselect:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay)) end
-	
-	local petcolorselectbg = petcolorselect:CreateTexture(nil, 'BACKGROUND')
-	petcolorselectbg:SetWidth(17)
+    
+    local petcolorselectbg = petcolorselect:CreateTexture(nil, 'BACKGROUND')
+    petcolorselectbg:SetWidth(17)
     petcolorselectbg:SetHeight(17)
-	petcolorselectbg:SetTexture(1,1,1)
-	petcolorselectbg:SetPoint('CENTER')
+    petcolorselectbg:SetTexture(1,1,1)
+    petcolorselectbg:SetPoint('CENTER')
     
     for i,v in pairs(buttons) do
         local button = CreateFrame("Button", "DCP_OptionsFrameButton"..i, optionsframe, "UIPanelButtonTemplate")
