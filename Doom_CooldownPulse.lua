@@ -94,7 +94,7 @@ local function OnUpdate(_,update)
                     texture = v[3]
                     start, duration, enabled = GetItemCooldown(i)
                 elseif (v[2] == "pet") then
-                    texture = select(3,GetPetActionInfo(v[3]))
+                    name, _, texture = GetPetActionInfo(v[3])
                     start, duration, enabled = GetPetActionCooldown(v[3])
                     isPet = true
                 end
