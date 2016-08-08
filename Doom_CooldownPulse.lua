@@ -181,7 +181,7 @@ DCP:RegisterEvent("ADDON_LOADED")
 
 function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,spell,rank,lineID,spellID)
     if (unit == "player") then
-        watching[spell] = {GetTime(),"spell",spellID}
+        watching[spellID] = {GetTime(),"spell",spellID}
         if (not self:IsMouseEnabled()) then
             self:SetScript("OnUpdate", OnUpdate)
         end
