@@ -31,6 +31,6 @@ Yes, the concept was originally developed by JIM. However, JIM has since gone MI
 
 ### License
 
-Copyright (c) 2012 Andrew Duthie
+Copyright (c) 2016 Andrew Duthie
 
 Released under the MIT License (see LICENSE.txt)
