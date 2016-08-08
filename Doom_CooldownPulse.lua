@@ -84,23 +84,24 @@ local function OnUpdate(_,update)
     if (elapsed > 0.05) then
         for i,v in pairs(watching) do
             if (GetTime() >= v[1] + 0.5) then
-                if ignoredSpells[i] then
+                local start, duration, enabled, texture, isPet, name
+                if (v[2] == "spell") then
+                    name = GetSpellInfo(v[3])
+                    texture = GetSpellTexture(v[3])
+                    start, duration, enabled = GetSpellCooldown(v[3])
+                elseif (v[2] == "item") then
+                    name = GetItemInfo(i)
+                    texture = v[3]
+                    start, duration, enabled = GetItemCooldown(i)
+                elseif (v[2] == "pet") then
+                    texture = select(3,GetPetActionInfo(v[3]))
+                    start, duration, enabled = GetPetActionCooldown(v[3])
+                    isPet = true
+                end
+
+                if ignoredSpells[name] then
                     watching[i] = nil
                 else
-                    local start, duration, enabled, texture, isPet, name
-                    if (v[2] == "spell") then
-						name = GetSpellInfo(v[3])
-                        texture = GetSpellTexture(v[3])
-                        start, duration, enabled = GetSpellCooldown(v[3])
-                    elseif (v[2] == "item") then
-						name = GetItemInfo(i)
-                        texture = v[3]
-                        start, duration, enabled = GetItemCooldown(i)
-                    elseif (v[2] == "pet") then
-                        texture = select(3,GetPetActionInfo(v[3]))
-                        start, duration, enabled = GetPetActionCooldown(v[3])
-                        isPet = true
-                    end
                     if (enabled ~= 0) then
                         if (duration and duration > 2.0 and texture) then
                             cooldowns[i] = { start, duration, texture, isPet, name }
