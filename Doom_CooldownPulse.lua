@@ -363,7 +363,7 @@ function DCP:CreateOptionsFrame()
     spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
     spellnamecbt:SetChecked(DCP_Saved.showSpellName)
     spellnamecbt:SetScript("OnClick", function(self) 
-        local newState = (self:GetChecked() == 1) or nil
+        local newState = self:GetChecked()
         self:SetChecked(newState)
         DCP_Saved.showSpellName = newState
         RefreshLocals()
@@ -419,6 +419,6 @@ function DCP:CreateOptionsFrame()
         button:SetWidth(75)
         button:SetPoint("BOTTOM", optionsframe, "BOTTOM", ((i%2==0 and -1) or 1)*45, ceil(i/2)*15 + (ceil(i/2)-1)*15)
         button:SetText(v.text)
-        button:SetScript("OnClick", function(self) PlaySound("igMainMenuOption") v.func(self) end)
+        button:SetScript("OnClick", function(self) PlaySound(852) v.func(self) end)
     end
 end
