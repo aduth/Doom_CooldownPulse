@@ -94,7 +94,7 @@ local function OnUpdate(_,update)
                     texture = v[3]
                     start, duration, enabled = GetItemCooldown(i)
                 elseif (v[2] == "pet") then
-                    name, _, texture = GetPetActionInfo(v[3])
+                    name, texture = GetPetActionInfo(v[3])
                     start, duration, enabled = GetPetActionCooldown(v[3])
                     isPet = true
                 end
@@ -180,7 +180,7 @@ function DCP:ADDON_LOADED(addon)
 end
 DCP:RegisterEvent("ADDON_LOADED")
 
-function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,spell,rank,lineID,spellID)
+function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,lineID,spellID)
     if (unit == "player") then
         watching[spellID] = {GetTime(),"spell",spellID}
         if (not self:IsMouseEnabled()) then
@@ -190,8 +190,8 @@ function DCP:UNIT_SPELLCAST_SUCCEEDED(unit,spell,rank,lineID,spellID)
 end
 DCP:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 
-function DCP:COMBAT_LOG_EVENT_UNFILTERED(...)
-    local _,event,_,_,_,sourceFlags,_,_,_,_,_,spellID = ...
+function DCP:COMBAT_LOG_EVENT_UNFILTERED()
+    local _,event,_,_,_,sourceFlags,_,_,_,_,_,spellID = CombatLogGetCurrentEventInfo()
     if (event == "SPELL_CAST_SUCCESS") then
         if (bit.band(sourceFlags,COMBATLOG_OBJECT_TYPE_PET) == COMBATLOG_OBJECT_TYPE_PET and bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE) then
             local name = GetSpellInfo(spellID)
