@@ -145,7 +145,6 @@ local function OnUpdate(_,update)
                 if animating[1][2] then
                     DCPT:SetVertexColor(unpack(DCP_Saved.petOverlay))
                 end
-                PlaySoundFile("Interface\\AddOns\\Doom_CooldownPulse\\lubdub.wav")
             end
             local alpha = maxAlpha
             if (runtimer < fadeInTime) then
