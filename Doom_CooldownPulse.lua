@@ -354,7 +354,7 @@ function DCP:CreateOptionsFrame()
             end },
     }
 
-    local optionsframe = CreateFrame("frame","DCP_OptionsFrame")
+    local optionsframe = CreateFrame("frame","DCP_OptionsFrame",UIParent)
     optionsframe:SetBackdrop({
       bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
       edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", 
