@@ -12,8 +12,8 @@ local defaultsettings = {
     petOverlay = {1,1,1},
     ignoredSpells = "",
     showSpellName = nil,
-    x = UIParent:GetWidth()/2, 
-    y = UIParent:GetHeight()/2 
+    x = UIParent:GetWidth()*UIParent:GetEffectiveScale()/2,
+    y = UIParent:GetHeight()*UIParent:GetEffectiveScale()/2
 }
 
 local DCP = CreateFrame("frame")
