@@ -1,4 +1,4 @@
-local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, ignoredSpells
+local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, ignoredSpells, invertIgnored
 local cooldowns, animating, watching = { }, { }, { }
 local GetTime = GetTime
 
@@ -11,6 +11,7 @@ local defaultsettings = {
     holdTime = 0,
     petOverlay = {1,1,1},
     ignoredSpells = "",
+    invertIgnored = false,
     showSpellName = nil,
     x = UIParent:GetWidth()*UIParent:GetEffectiveScale()/2,
     y = UIParent:GetHeight()*UIParent:GetEffectiveScale()/2
@@ -89,6 +90,7 @@ local function RefreshLocals()
     iconSize = DCP_Saved.iconSize
     holdTime = DCP_Saved.holdTime
     showSpellName = DCP_Saved.showSpellName
+    invertIgnored = DCP_Saved.invertIgnored
 
     ignoredSpells = { }
     for _,v in ipairs({strsplit(",",DCP_Saved.ignoredSpells)}) do
@@ -145,7 +147,7 @@ local function OnUpdate(_,update)
                 end
 
                 local cooldown = getCooldownDetails()
-                if (ignoredSpells[cooldown.name]) then
+                if ((ignoredSpells[cooldown.name] ~= nil) ~= invertIgnored) then
                     watching[i] = nil
                 else
                     if (cooldown.enabled ~= 0) then
@@ -348,6 +350,8 @@ function DCP:CreateOptionsFrame()
                 getglobal("DCP_OptionsFrameSlider"..i):SetValue(DCP_Saved[v.value]) 
             end
             DCP_OptionsFramePetColorBox:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay))
+            DCP_OptionsFrameIgnoreTypeButtonWhitelist:SetChecked(false)
+            DCP_OptionsFrameIgnoreTypeButtonBlacklist:SetChecked(true)
             DCP_OptionsFrameIgnoreBox:SetText("")
             DCP:ClearAllPoints()
             DCP:SetPoint("CENTER",UIParent,"BOTTOMLEFT",DCP_Saved.x,DCP_Saved.y) 
@@ -362,7 +366,7 @@ function DCP:CreateOptionsFrame()
       insets={left=11, right=12, top=12, bottom=11}
     })
     optionsframe:SetWidth(220)
-    optionsframe:SetHeight(500)
+    optionsframe:SetHeight(540)
     optionsframe:SetPoint("CENTER",UIParent)
     optionsframe:EnableMouse(true)
     optionsframe:SetMovable(true)
@@ -408,44 +412,12 @@ function DCP:CreateOptionsFrame()
             end end)
     end
     
-    local spellnametext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
-    spellnametext:SetPoint("TOPLEFT","DCP_OptionsFrameSlider"..#sliders,"BOTTOMLEFT",-15,-25)
-    spellnametext:SetText("Show spell name:")
-    
-    local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
-    spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
-    spellnamecbt:SetChecked(DCP_Saved.showSpellName)
-    spellnamecbt:SetScript("OnClick", function(self) 
-        local newState = self:GetChecked()
-        self:SetChecked(newState)
-        DCP_Saved.showSpellName = newState
-        RefreshLocals()
-    end)
-    
-    local ignoretext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
-    ignoretext:SetPoint("TOPLEFT",spellnametext,"BOTTOMLEFT",0,-10)
-    ignoretext:SetText("Cooldowns to ignore:")
-    
-    local ignorebox = CreateFrame("EditBox","DCP_OptionsFrameIgnoreBox",optionsframe,"InputBoxTemplate")
-    ignorebox:SetAutoFocus(false)
-    ignorebox:SetPoint("TOPLEFT",ignoretext,"BOTTOMLEFT",0,3)
-    ignorebox:SetWidth(180)
-    ignorebox:SetHeight(32)
-    ignorebox:SetText(DCP_Saved.ignoredSpells)
-    ignorebox:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("Note: Separate multiple spells with commas") end)
-    ignorebox:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
-    ignorebox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
-    ignorebox:SetScript("OnEditFocusLost",function(self)
-        DCP_Saved.ignoredSpells = ignorebox:GetText()
-        RefreshLocals()
-    end)
-    
     local pettext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
-    pettext:SetPoint("TOPLEFT",ignorebox,"BOTTOMLEFT",0,-5)
+    pettext:SetPoint("TOPLEFT","DCP_OptionsFrameSlider"..#sliders,"BOTTOMLEFT",-15,-30)
     pettext:SetText("Pet color overlay:")
     
     local petcolorselect = CreateFrame('Button',"DCP_OptionsFramePetColorBox",optionsframe)
-    petcolorselect:SetPoint("LEFT",pettext,"RIGHT",5,-2)
+    petcolorselect:SetPoint("LEFT",pettext,"RIGHT",10,0)
     petcolorselect:SetWidth(20)
     petcolorselect:SetHeight(20)
     petcolorselect:SetNormalTexture('Interface/ChatFrame/ChatFrameColorSwatch')
@@ -465,6 +437,64 @@ function DCP:CreateOptionsFrame()
     petcolorselectbg:SetHeight(17)
     petcolorselectbg:SetTexture(1,1,1)
     petcolorselectbg:SetPoint('CENTER')
+    
+    local spellnametext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    spellnametext:SetPoint("TOPLEFT",pettext,"BOTTOMLEFT",0,-18)
+    spellnametext:SetText("Show spell name:")
+    
+    local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
+    spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
+    spellnamecbt:SetChecked(DCP_Saved.showSpellName)
+    spellnamecbt:SetScript("OnClick", function(self) 
+        local newState = self:GetChecked()
+        self:SetChecked(newState)
+        DCP_Saved.showSpellName = newState
+        RefreshLocals()
+    end)
+    
+    local ignoretext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    ignoretext:SetPoint("TOPLEFT",spellnametext,"BOTTOMLEFT",0,-18)
+    ignoretext:SetText("Filter spells:")
+    
+    local ignoretypebuttonblacklist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonBlacklist",optionsframe,"UIRadioButtonTemplate")
+    ignoretypebuttonblacklist:SetPoint("TOPLEFT",ignoretext,"BOTTOMLEFT",0,-4)
+    ignoretypebuttonblacklist:SetChecked(not DCP_Saved.invertIgnored)
+    ignoretypebuttonblacklist:SetScript("OnClick", function() 
+        DCP_OptionsFrameIgnoreTypeButtonWhitelist:SetChecked(false)
+        DCP_Saved.invertIgnored = false
+        RefreshLocals()
+    end)
+    
+    local ignoretypetextblacklist = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    ignoretypetextblacklist:SetPoint("LEFT",ignoretypebuttonblacklist,"RIGHT",4,0)
+    ignoretypetextblacklist:SetText("Blacklist")
+    
+    local ignoretypebuttonwhitelist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonWhitelist",optionsframe,"UIRadioButtonTemplate")
+    ignoretypebuttonwhitelist:SetPoint("LEFT",ignoretypetextblacklist,"RIGHT",10,0)
+    ignoretypebuttonwhitelist:SetChecked(DCP_Saved.invertIgnored)
+    ignoretypebuttonwhitelist:SetScript("OnClick", function() 
+        DCP_OptionsFrameIgnoreTypeButtonBlacklist:SetChecked(false)
+        DCP_Saved.invertIgnored = true
+        RefreshLocals()
+    end)
+    
+    local ignoretypetextwhitelist = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
+    ignoretypetextwhitelist:SetPoint("LEFT",ignoretypebuttonwhitelist,"RIGHT",4,0)
+    ignoretypetextwhitelist:SetText("Whitelist")
+    
+    local ignorebox = CreateFrame("EditBox","DCP_OptionsFrameIgnoreBox",optionsframe,"InputBoxTemplate")
+    ignorebox:SetAutoFocus(false)
+    ignorebox:SetPoint("TOPLEFT",ignoretypebuttonblacklist,"BOTTOMLEFT",4,2)
+    ignorebox:SetWidth(170)
+    ignorebox:SetHeight(32)
+    ignorebox:SetText(DCP_Saved.ignoredSpells)
+    ignorebox:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("Note: Separate multiple spells with commas") end)
+    ignorebox:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
+    ignorebox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+    ignorebox:SetScript("OnEditFocusLost",function(self)
+        DCP_Saved.ignoredSpells = ignorebox:GetText()
+        RefreshLocals()
+    end)
     
     for i,v in pairs(buttons) do
         local button = CreateFrame("Button", "DCP_OptionsFrameButton"..i, optionsframe, "UIPanelButtonTemplate")
