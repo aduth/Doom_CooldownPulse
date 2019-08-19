@@ -2,12 +2,12 @@ local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, ignoredS
 local cooldowns, animating, watching = { }, { }, { }
 local GetTime = GetTime
 
-local defaultsettings = { 
-    fadeInTime = 0.3, 
-    fadeOutTime = 0.7, 
-    maxAlpha = 0.7, 
-    animScale = 1.5, 
-    iconSize = 75, 
+local defaultsettings = {
+    fadeInTime = 0.3,
+    fadeOutTime = 0.7,
+    maxAlpha = 0.7,
+    animScale = 1.5,
+    iconSize = 75,
     holdTime = 0,
     petOverlay = {1,1,1},
     ignoredSpells = "",
@@ -22,11 +22,11 @@ DCP:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 DCP:SetMovable(true)
 DCP:RegisterForDrag("LeftButton")
 DCP:SetScript("OnDragStart", function(self) self:StartMoving() end)
-DCP:SetScript("OnDragStop", function(self) 
-    self:StopMovingOrSizing() 
-    DCP_Saved.x = self:GetLeft()+self:GetWidth()/2 
-    DCP_Saved.y = self:GetBottom()+self:GetHeight()/2 
-    self:ClearAllPoints() 
+DCP:SetScript("OnDragStop", function(self)
+    self:StopMovingOrSizing()
+    DCP_Saved.x = self:GetLeft()+self:GetWidth()/2
+    DCP_Saved.y = self:GetBottom()+self:GetHeight()/2
+    self:ClearAllPoints()
     self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",DCP_Saved.x,DCP_Saved.y)
 end)
 DCP.TextFrame = DCP:CreateFontString(nil, "ARTWORK")
@@ -69,7 +69,7 @@ local function memoize(f)
     end
 
     setmetatable(memoized, {__call = get})
-    
+
     return memoized
 end
 
@@ -169,14 +169,14 @@ local function OnUpdate(_,update)
                 cooldowns[i] = nil
             end
         end
-        
+
         elapsed = 0
         if (#animating == 0 and tcount(watching) == 0 and tcount(cooldowns) == 0) then
             DCP:SetScript("OnUpdate", nil)
             return
         end
     end
-    
+
     if (#animating > 0) then
         runtimer = runtimer + update
         if (runtimer > (fadeInTime + holdTime + fadeOutTime)) then
@@ -317,52 +317,52 @@ function DCP:CreateOptionsFrame()
         { text = "Max Opacity Hold Time", value = "holdTime", min = 0, max = 1.5, step = 0.1 },
         { text = "Animation Scaling", value = "animScale", min = 0, max = 2, step = 0.1 },
     }
-    
+
     local buttons = {
         { text = "Close", func = function(self) self:GetParent():Hide() end },
-        { text = "Test", func = function(self) 
-            DCP_OptionsFrameButton3:SetText("Unlock") 
-            DCP:EnableMouse(false) 
-            RefreshLocals() 
-            tinsert(animating,{"Interface\\Icons\\Spell_Nature_Earthbind",nil,"Spell Name"}) 
-            DCP:SetScript("OnUpdate", OnUpdate) 
+        { text = "Test", func = function(self)
+            DCP_OptionsFrameButton3:SetText("Unlock")
+            DCP:EnableMouse(false)
+            RefreshLocals()
+            tinsert(animating,{"Interface\\Icons\\Spell_Nature_Earthbind",nil,"Spell Name"})
+            DCP:SetScript("OnUpdate", OnUpdate)
             end },
-        { text = "Unlock", func = function(self) 
+        { text = "Unlock", func = function(self)
             if (self:GetText() == "Unlock") then
                 RefreshLocals()
-                DCP:SetWidth(iconSize) 
-                DCP:SetHeight(iconSize) 
-                self:SetText("Lock") 
-                DCP:SetScript("OnUpdate", nil) 
-                DCP:SetAlpha(1) 
-                DCPT:SetTexture("Interface\\Icons\\Spell_Nature_Earthbind") 
-                DCP:EnableMouse(true) 
-            else 
-                DCP:SetAlpha(0) 
-                self:SetText("Unlock") 
-                DCP:EnableMouse(false) 
+                DCP:SetWidth(iconSize)
+                DCP:SetHeight(iconSize)
+                self:SetText("Lock")
+                DCP:SetScript("OnUpdate", nil)
+                DCP:SetAlpha(1)
+                DCPT:SetTexture("Interface\\Icons\\Spell_Nature_Earthbind")
+                DCP:EnableMouse(true)
+            else
+                DCP:SetAlpha(0)
+                self:SetText("Unlock")
+                DCP:EnableMouse(false)
             end end },
-        { text = "Defaults", func = function(self) 
-            for i,v in pairs(defaultsettings) do 
-                DCP_Saved[i] = v 
-            end 
-            for i,v in pairs(sliders) do 
-                getglobal("DCP_OptionsFrameSlider"..i):SetValue(DCP_Saved[v.value]) 
+        { text = "Defaults", func = function(self)
+            for i,v in pairs(defaultsettings) do
+                DCP_Saved[i] = v
+            end
+            for i,v in pairs(sliders) do
+                getglobal("DCP_OptionsFrameSlider"..i):SetValue(DCP_Saved[v.value])
             end
             DCP_OptionsFramePetColorBox:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay))
             DCP_OptionsFrameIgnoreTypeButtonWhitelist:SetChecked(false)
             DCP_OptionsFrameIgnoreTypeButtonBlacklist:SetChecked(true)
             DCP_OptionsFrameIgnoreBox:SetText("")
             DCP:ClearAllPoints()
-            DCP:SetPoint("CENTER",UIParent,"BOTTOMLEFT",DCP_Saved.x,DCP_Saved.y) 
+            DCP:SetPoint("CENTER",UIParent,"BOTTOMLEFT",DCP_Saved.x,DCP_Saved.y)
             end },
     }
 
     local optionsframe = CreateFrame("frame","DCP_OptionsFrame",UIParent)
     optionsframe:SetBackdrop({
-      bgFile="Interface\\DialogFrame\\UI-DialogBox-Background", 
-      edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border", 
-      tile=1, tileSize=32, edgeSize=32, 
+      bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",
+      edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",
+      tile=1, tileSize=32, edgeSize=32,
       insets={left=11, right=12, top=12, bottom=11}
     })
     optionsframe:SetWidth(220)
@@ -403,19 +403,19 @@ function DCP:CreateOptionsFrame()
         slider:SetMinMaxValues(v.min,v.max)
         slider:SetValueStep(v.step)
         slider:SetValue(DCP_Saved[v.value])
-        slider:SetScript("OnValueChanged",function() 
-            local val=slider:GetValue() DCP_Saved[v.value]=val 
-            valuetext:SetText(format("%.1f",val)) 
-            if (DCP:IsMouseEnabled()) then 
-                DCP:SetWidth(DCP_Saved.iconSize) 
-                DCP:SetHeight(DCP_Saved.iconSize) 
+        slider:SetScript("OnValueChanged",function()
+            local val=slider:GetValue() DCP_Saved[v.value]=val
+            valuetext:SetText(format("%.1f",val))
+            if (DCP:IsMouseEnabled()) then
+                DCP:SetWidth(DCP_Saved.iconSize)
+                DCP:SetHeight(DCP_Saved.iconSize)
             end end)
     end
-    
+
     local pettext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     pettext:SetPoint("TOPLEFT","DCP_OptionsFrameSlider"..#sliders,"BOTTOMLEFT",-15,-30)
     pettext:SetText("Pet color overlay:")
-    
+
     local petcolorselect = CreateFrame('Button',"DCP_OptionsFramePetColorBox",optionsframe)
     petcolorselect:SetPoint("LEFT",pettext,"RIGHT",10,0)
     petcolorselect:SetWidth(20)
@@ -424,64 +424,64 @@ function DCP:CreateOptionsFrame()
     petcolorselect:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay))
     petcolorselect:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("Note: Use white if you don't want any overlay for pet cooldowns") end)
     petcolorselect:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
-    petcolorselect:SetScript('OnClick', function(self) 
-        self.r,self.g,self.b = unpack(DCP_Saved.petOverlay) 
-        OpenColorPicker(self) 
+    petcolorselect:SetScript('OnClick', function(self)
+        self.r,self.g,self.b = unpack(DCP_Saved.petOverlay)
+        OpenColorPicker(self)
         ColorPickerFrame:SetPoint("TOPLEFT",optionsframe,"TOPRIGHT")
         end)
     petcolorselect.swatchFunc = function(self) DCP_Saved.petOverlay={ColorPickerFrame:GetColorRGB()} petcolorselect:GetNormalTexture():SetVertexColor(ColorPickerFrame:GetColorRGB()) end
     petcolorselect.cancelFunc = function(self) DCP_Saved.petOverlay={self.r,self.g,self.b} petcolorselect:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay)) end
-    
+
     local petcolorselectbg = petcolorselect:CreateTexture(nil, 'BACKGROUND')
     petcolorselectbg:SetWidth(17)
     petcolorselectbg:SetHeight(17)
     petcolorselectbg:SetTexture(1,1,1)
     petcolorselectbg:SetPoint('CENTER')
-    
+
     local spellnametext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     spellnametext:SetPoint("TOPLEFT",pettext,"BOTTOMLEFT",0,-18)
     spellnametext:SetText("Show spell name:")
-    
+
     local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
     spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
     spellnamecbt:SetChecked(DCP_Saved.showSpellName)
-    spellnamecbt:SetScript("OnClick", function(self) 
+    spellnamecbt:SetScript("OnClick", function(self)
         local newState = self:GetChecked()
         self:SetChecked(newState)
         DCP_Saved.showSpellName = newState
         RefreshLocals()
     end)
-    
+
     local ignoretext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     ignoretext:SetPoint("TOPLEFT",spellnametext,"BOTTOMLEFT",0,-18)
     ignoretext:SetText("Filter spells:")
-    
+
     local ignoretypebuttonblacklist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonBlacklist",optionsframe,"UIRadioButtonTemplate")
     ignoretypebuttonblacklist:SetPoint("TOPLEFT",ignoretext,"BOTTOMLEFT",0,-4)
     ignoretypebuttonblacklist:SetChecked(not DCP_Saved.invertIgnored)
-    ignoretypebuttonblacklist:SetScript("OnClick", function() 
+    ignoretypebuttonblacklist:SetScript("OnClick", function()
         DCP_OptionsFrameIgnoreTypeButtonWhitelist:SetChecked(false)
         DCP_Saved.invertIgnored = false
         RefreshLocals()
     end)
-    
+
     local ignoretypetextblacklist = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     ignoretypetextblacklist:SetPoint("LEFT",ignoretypebuttonblacklist,"RIGHT",4,0)
     ignoretypetextblacklist:SetText("Blacklist")
-    
+
     local ignoretypebuttonwhitelist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonWhitelist",optionsframe,"UIRadioButtonTemplate")
     ignoretypebuttonwhitelist:SetPoint("LEFT",ignoretypetextblacklist,"RIGHT",10,0)
     ignoretypebuttonwhitelist:SetChecked(DCP_Saved.invertIgnored)
-    ignoretypebuttonwhitelist:SetScript("OnClick", function() 
+    ignoretypebuttonwhitelist:SetScript("OnClick", function()
         DCP_OptionsFrameIgnoreTypeButtonBlacklist:SetChecked(false)
         DCP_Saved.invertIgnored = true
         RefreshLocals()
     end)
-    
+
     local ignoretypetextwhitelist = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
     ignoretypetextwhitelist:SetPoint("LEFT",ignoretypebuttonwhitelist,"RIGHT",4,0)
     ignoretypetextwhitelist:SetText("Whitelist")
-    
+
     local ignorebox = CreateFrame("EditBox","DCP_OptionsFrameIgnoreBox",optionsframe,"InputBoxTemplate")
     ignorebox:SetAutoFocus(false)
     ignorebox:SetPoint("TOPLEFT",ignoretypebuttonblacklist,"BOTTOMLEFT",4,2)
@@ -495,7 +495,7 @@ function DCP:CreateOptionsFrame()
         DCP_Saved.ignoredSpells = ignorebox:GetText()
         RefreshLocals()
     end)
-    
+
     for i,v in pairs(buttons) do
         local button = CreateFrame("Button", "DCP_OptionsFrameButton"..i, optionsframe, "UIPanelButtonTemplate")
         button:SetHeight(24)
