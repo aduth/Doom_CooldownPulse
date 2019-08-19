@@ -1,4 +1,4 @@
-local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, ignoredSpells, invertIgnored
+local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, showSpellName, ignoredSpells, invertIgnored
 local cooldowns, animating, watching = { }, { }, { }
 local GetTime = GetTime
 
