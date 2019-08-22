@@ -2,7 +2,7 @@ local fadeInTime, fadeOutTime, maxAlpha, animScale, iconSize, holdTime, showSpel
 local cooldowns, animating, watching = { }, { }, { }
 local GetTime = GetTime
 
-local defaultsettings = {
+local defaultSettings = {
     fadeInTime = 0.3,
     fadeOutTime = 0.7,
     maxAlpha = 0.7,
@@ -10,11 +10,14 @@ local defaultsettings = {
     iconSize = 75,
     holdTime = 0,
     petOverlay = {1,1,1},
-    ignoredSpells = "",
-    invertIgnored = false,
     showSpellName = nil,
     x = UIParent:GetWidth()*UIParent:GetEffectiveScale()/2,
     y = UIParent:GetHeight()*UIParent:GetEffectiveScale()/2
+}
+
+local defaultSettingsPerCharacter = {
+    ignoredSpells = "",
+    invertIgnored = false
 }
 
 local DCP = CreateFrame("frame")
@@ -90,10 +93,10 @@ local function RefreshLocals()
     iconSize = DCP_Saved.iconSize
     holdTime = DCP_Saved.holdTime
     showSpellName = DCP_Saved.showSpellName
-    invertIgnored = DCP_Saved.invertIgnored
+    invertIgnored = DCP_SavedPerCharacter.invertIgnored
 
     ignoredSpells = { }
-    for _,v in ipairs({strsplit(",",DCP_Saved.ignoredSpells)}) do
+    for _,v in ipairs({strsplit(",",DCP_SavedPerCharacter.ignoredSpells)}) do
         ignoredSpells[strtrim(v)] = true
     end
 end
@@ -214,11 +217,27 @@ end
 --------------------
 function DCP:ADDON_LOADED(addon)
     if (not DCP_Saved) then
-        DCP_Saved = defaultsettings
+        DCP_Saved = {unpack(defaultSettings)}
     else
-        for i,v in pairs(defaultsettings) do
+        for i,v in pairs(defaultSettings) do
             if (not DCP_Saved[i]) then
                 DCP_Saved[i] = v
+            end
+        end
+    end
+    if (not DCP_SavedPerCharacter) then
+        -- Unpack as shallow clone to avoid reset-to-default as considering the
+        -- value assigned from the legacy saved variable below.
+        DCP_SavedPerCharacter = {unpack(defaultSettingsPerCharacter)}
+
+        -- Backwards compatibility: Assign from legacy saved value if exists.
+        if (DCP_Saved.ignoredSpells) then
+            DCP_SavedPerCharacter.ignoredSpells = DCP_Saved.ignoredSpells
+        end
+    else
+        for i,v in pairs(defaultSettingsPerCharacter) do
+            if (not DCP_SavedPerCharacter[i]) then
+                DCP_SavedPerCharacter[i] = v
             end
         end
     end
@@ -343,8 +362,11 @@ function DCP:CreateOptionsFrame()
                 DCP:EnableMouse(false)
             end end },
         { text = "Defaults", func = function(self)
-            for i,v in pairs(defaultsettings) do
+            for i,v in pairs(defaultSettings) do
                 DCP_Saved[i] = v
+            end
+            for i,v in pairs(defaultSettingsPerCharacter) do
+                DCP_SavedPerCharacter[i] = v
             end
             for i,v in pairs(sliders) do
                 getglobal("DCP_OptionsFrameSlider"..i):SetValue(DCP_Saved[v.value])
@@ -458,10 +480,10 @@ function DCP:CreateOptionsFrame()
 
     local ignoretypebuttonblacklist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonBlacklist",optionsframe,"UIRadioButtonTemplate")
     ignoretypebuttonblacklist:SetPoint("TOPLEFT",ignoretext,"BOTTOMLEFT",0,-4)
-    ignoretypebuttonblacklist:SetChecked(not DCP_Saved.invertIgnored)
+    ignoretypebuttonblacklist:SetChecked(not DCP_SavedPerCharacter.invertIgnored)
     ignoretypebuttonblacklist:SetScript("OnClick", function()
         DCP_OptionsFrameIgnoreTypeButtonWhitelist:SetChecked(false)
-        DCP_Saved.invertIgnored = false
+        DCP_SavedPerCharacter.invertIgnored = false
         RefreshLocals()
     end)
 
@@ -471,10 +493,10 @@ function DCP:CreateOptionsFrame()
 
     local ignoretypebuttonwhitelist = CreateFrame("Checkbutton","DCP_OptionsFrameIgnoreTypeButtonWhitelist",optionsframe,"UIRadioButtonTemplate")
     ignoretypebuttonwhitelist:SetPoint("LEFT",ignoretypetextblacklist,"RIGHT",10,0)
-    ignoretypebuttonwhitelist:SetChecked(DCP_Saved.invertIgnored)
+    ignoretypebuttonwhitelist:SetChecked(DCP_SavedPerCharacter.invertIgnored)
     ignoretypebuttonwhitelist:SetScript("OnClick", function()
         DCP_OptionsFrameIgnoreTypeButtonBlacklist:SetChecked(false)
-        DCP_Saved.invertIgnored = true
+        DCP_SavedPerCharacter.invertIgnored = true
         RefreshLocals()
     end)
 
@@ -487,12 +509,12 @@ function DCP:CreateOptionsFrame()
     ignorebox:SetPoint("TOPLEFT",ignoretypebuttonblacklist,"BOTTOMLEFT",4,2)
     ignorebox:SetWidth(170)
     ignorebox:SetHeight(32)
-    ignorebox:SetText(DCP_Saved.ignoredSpells)
+    ignorebox:SetText(DCP_SavedPerCharacter.ignoredSpells)
     ignorebox:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("Note: Separate multiple spells with commas") end)
     ignorebox:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
     ignorebox:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
     ignorebox:SetScript("OnEditFocusLost",function(self)
-        DCP_Saved.ignoredSpells = ignorebox:GetText()
+        DCP_SavedPerCharacter.ignoredSpells = ignorebox:GetText()
         RefreshLocals()
     end)
 
