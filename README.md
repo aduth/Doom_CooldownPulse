@@ -26,9 +26,6 @@ Doom_CooldownPulse requires no initial setup; just install and you're good to go
 
 It is intended to be very easy to customize, and your changes take effect immediately. You can see how your settings will look by pressing the "Test" button, or reset them to the default settings by pressing the "Defaults" button.
 
-### Isn't this very similar to another addon, JIM's Cooldown Pulse?
-Yes, the concept was originally developed by JIM. However, JIM has since gone MIA due to his new job and no longer updates his addon. I was able to get in touch with him, and he is very much supportive of Doom_CooldownPulse. Doom_CooldownPulse is neither an updated version nor a direct clone, but instead an alternative option with the same concept.
-
 ### License
 
 Copyright (c) 2008-2019 Andrew Duthie
