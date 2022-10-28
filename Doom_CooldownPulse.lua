@@ -101,6 +101,27 @@ local function RefreshLocals()
     end
 end
 
+local function MergeTable(destination, source)
+    for i, v in pairs(source) do
+        if (destination[i] == nil) then
+            destination[i] = v
+        end
+    end
+end
+
+local function InitializeSavedVariables()
+    if (DCP_Saved == nil) then
+        DCP_Saved = {}
+    end
+
+    if (DCP_SavedPerCharacter == nil) then
+        DCP_SavedPerCharacter = {}
+    end
+
+    MergeTable(DCP_Saved, defaultSettings)
+    MergeTable(DCP_SavedPerCharacter, defaultSettingsPerCharacter)
+end
+
 --------------------------
 -- Cooldown / Animation --
 --------------------------
@@ -216,31 +237,7 @@ end
 -- Event Handlers --
 --------------------
 function DCP:ADDON_LOADED(addon)
-    if (not DCP_Saved) then
-        DCP_Saved = {unpack(defaultSettings)}
-    else
-        for i,v in pairs(defaultSettings) do
-            if (not DCP_Saved[i]) then
-                DCP_Saved[i] = v
-            end
-        end
-    end
-    if (not DCP_SavedPerCharacter) then
-        -- Unpack as shallow clone to avoid reset-to-default as considering the
-        -- value assigned from the legacy saved variable below.
-        DCP_SavedPerCharacter = {unpack(defaultSettingsPerCharacter)}
-
-        -- Backwards compatibility: Assign from legacy saved value if exists.
-        if (DCP_Saved.ignoredSpells) then
-            DCP_SavedPerCharacter.ignoredSpells = DCP_Saved.ignoredSpells
-        end
-    else
-        for i,v in pairs(defaultSettingsPerCharacter) do
-            if (not DCP_SavedPerCharacter[i]) then
-                DCP_SavedPerCharacter[i] = v
-            end
-        end
-    end
+    InitializeSavedVariables()
     RefreshLocals()
     self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",DCP_Saved.x,DCP_Saved.y)
     self:UnregisterEvent("ADDON_LOADED")
