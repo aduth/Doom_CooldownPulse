@@ -461,7 +461,7 @@ function DCP:CreateOptionsFrame()
     spellnametext:SetPoint("TOPLEFT",pettext,"BOTTOMLEFT",0,-18)
     spellnametext:SetText("Show spell name:")
 
-    local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"OptionsCheckButtonTemplate")
+    local spellnamecbt = CreateFrame("CheckButton","DCP_OptionsFrameSpellNameCheckButton",optionsframe,"UICheckButtonTemplate")
     spellnamecbt:SetPoint("LEFT",spellnametext,"RIGHT",6,0)
     spellnamecbt:SetChecked(DCP_Saved.showSpellName)
     spellnamecbt:SetScript("OnClick", function(self)
