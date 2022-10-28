@@ -1,4 +1,4 @@
-## Interface: 90100
+## Interface: 100000
 ## Title: Doom_CooldownPulse
 ## Notes: Flash an ability's icon in the middle of the screen when it comes off cooldown.
 ## Author: Woffle of Dark Iron[US]
