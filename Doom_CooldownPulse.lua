@@ -187,9 +187,13 @@ local function OnUpdate(_,update)
         end
         for i,getCooldownDetails in pairs(cooldowns) do
             local cooldown = getCooldownDetails()
-            local remaining = cooldown.duration-(GetTime()-cooldown.start)
-            if (remaining <= 0) then
-                tinsert(animating, {cooldown.texture,cooldown.isPet,cooldown.name})
+            if cooldown.start then
+                local remaining = cooldown.duration-(GetTime()-cooldown.start)
+                if (remaining <= 0) then
+                    tinsert(animating, {cooldown.texture,cooldown.isPet,cooldown.name})
+                    cooldowns[i] = nil
+                end
+            else
                 cooldowns[i] = nil
             end
         end
