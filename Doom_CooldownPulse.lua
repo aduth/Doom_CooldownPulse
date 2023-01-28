@@ -296,6 +296,16 @@ function DCP:PLAYER_ENTERING_WORLD()
 end
 DCP:RegisterEvent("PLAYER_ENTERING_WORLD")
 
+function DCP:PLAYER_SPECIALIZATION_CHANGED(unit)
+    if (unit == "player") then
+        wipe(cooldowns)
+        wipe(watching)
+    end
+end
+if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE then
+    DCP:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+end
+
 hooksecurefunc("UseAction", function(slot)
     local actionType,itemID = GetActionInfo(slot)
     if (actionType == "item") then
