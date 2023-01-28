@@ -340,6 +340,14 @@ hooksecurefunc("UseInventoryItem", function(slot)
     end
 end)
 
+hooksecurefunc(C_Container, "UseContainerItem", function(bag,slot)
+    local itemID = C_Container.GetContainerItemID(bag, slot)
+    if (itemID and not TrackItemSpell(itemID)) then
+        local texture = select(10, GetItemInfo(itemID))
+        watching[itemID] = {GetTime(),"item",texture}
+    end
+end)
+
 -------------------
 -- Options Frame --
 -------------------
