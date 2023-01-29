@@ -132,6 +132,16 @@ local function TrackItemSpell(itemID)
     end
 end
 
+local function IsAnimatingCooldownByName(name)
+    for i, details in pairs(animating) do
+        if details[3] == name then
+            return true
+        end
+    end
+
+    return false
+end
+
 --------------------------
 -- Cooldown / Animation --
 --------------------------
@@ -200,7 +210,9 @@ local function OnUpdate(_,update)
             if cooldown.start then
                 local remaining = cooldown.duration-(GetTime()-cooldown.start)
                 if (remaining <= 0) then
-                    tinsert(animating, {cooldown.texture,cooldown.isPet,cooldown.name})
+                    if not IsAnimatingCooldownByName(cooldown.name) then
+                        tinsert(animating, {cooldown.texture,cooldown.isPet,cooldown.name})
+                    end
                     cooldowns[i] = nil
                 end
             else
