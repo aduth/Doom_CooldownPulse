@@ -466,6 +466,7 @@ function DCP:CreateOptionsFrame()
         getglobal("DCP_OptionsFrameSlider"..i.."High"):SetText(v.max)
         slider:SetMinMaxValues(v.min,v.max)
         slider:SetValueStep(v.step)
+        slider:SetObeyStepOnDrag(true)
         slider:SetValue(DCP_Saved[v.value])
         slider:SetScript("OnValueChanged",function()
             local val=slider:GetValue() DCP_Saved[v.value]=val
