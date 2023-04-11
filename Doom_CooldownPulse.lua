@@ -472,12 +472,14 @@ function DCP:CreateOptionsFrame()
         slider:SetObeyStepOnDrag(true)
         slider:SetValue(DCP_Saved[v.value])
         slider:SetScript("OnValueChanged",function()
-            local val=slider:GetValue() DCP_Saved[v.value]=val
-            valuetext:SetText(format("%.1f",val))
+            local value = slider:GetValue()
+            DCP_Saved[v.value] = value
+            valuetext:SetText(format("%.1f", value))
             if (DCP:IsMouseEnabled()) then
                 DCP:SetWidth(DCP_Saved.iconSize)
                 DCP:SetHeight(DCP_Saved.iconSize)
-            end end)
+            end
+        end)
     end
 
     local pettext = optionsframe:CreateFontString(nil,"ARTWORK","GameFontNormalSmall")
