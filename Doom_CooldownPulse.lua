@@ -193,7 +193,7 @@ local function OnUpdate(_,update)
                 end
 
                 local cooldown = getCooldownDetails()
-                if ((ignoredSpells[cooldown.name] ~= nil) ~= invertIgnored) then
+                if ((ignoredSpells[cooldown.name] ~= nil or ignoredSpells[tostring(id)] ~= nil) ~= invertIgnored) then
                     watching[id] = nil
                 else
                     if (cooldown.enabled ~= 0) then
