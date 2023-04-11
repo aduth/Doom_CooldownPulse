@@ -152,7 +152,7 @@ local runtimer = 0
 local function OnUpdate(_,update)
     elapsed = elapsed + update
     if (elapsed > 0.05) then
-        for i,v in pairs(watching) do
+        for id, v in pairs(watching) do
             if (GetTime() >= v[1] + 0.5) then
                 local getCooldownDetails
                 if (v[2] == "spell") then
@@ -168,9 +168,9 @@ local function OnUpdate(_,update)
                     end)
                 elseif (v[2] == "item") then
                     getCooldownDetails = memoize(function()
-                        local start, duration, enabled = C_Container.GetItemCooldown(i)
+                        local start, duration, enabled = C_Container.GetItemCooldown(id)
                         return {
-                            name = GetItemInfo(i),
+                            name = GetItemInfo(id),
                             texture = v[3],
                             start = start,
                             duration = duration,
@@ -194,15 +194,15 @@ local function OnUpdate(_,update)
 
                 local cooldown = getCooldownDetails()
                 if ((ignoredSpells[cooldown.name] ~= nil) ~= invertIgnored) then
-                    watching[i] = nil
+                    watching[id] = nil
                 else
                     if (cooldown.enabled ~= 0) then
                         if (cooldown.duration and cooldown.duration > 2.0 and cooldown.texture) then
-                            cooldowns[i] = getCooldownDetails
+                            cooldowns[id] = getCooldownDetails
                         end
                     end
                     if (not (cooldown.enabled == 0 and v[2] == "spell")) then
-                        watching[i] = nil
+                        watching[id] = nil
                     end
                 end
             end
