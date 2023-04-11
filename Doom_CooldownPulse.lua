@@ -376,10 +376,10 @@ function DCP:CreateOptionsFrame()
         { text = "Icon Size", value = "iconSize", min = 30, max = 125, step = 5 },
         { text = "Fade In Time", value = "fadeInTime", min = 0, max = 1.5, step = 0.1 },
         { text = "Fade Out Time", value = "fadeOutTime", min = 0, max = 1.5, step = 0.1 },
-        { text = "Show Before Available Time", value = "remainingCooldownWhenNotified", min = 0, max = 3, step = 0.1 },
         { text = "Max Opacity", value = "maxAlpha", min = 0, max = 1, step = 0.1 },
         { text = "Max Opacity Hold Time", value = "holdTime", min = 0, max = 1.5, step = 0.1 },
         { text = "Animation Scaling", value = "animScale", min = 0, max = 2, step = 0.1 },
+        { text = "Show Before Available Time", value = "remainingCooldownWhenNotified", min = 0, max = 3, step = 0.1 },
     }
 
     local buttons = {
