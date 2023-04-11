@@ -432,7 +432,7 @@ function DCP:CreateOptionsFrame()
       tile=1, tileSize=32, edgeSize=32,
       insets={left=11, right=12, top=12, bottom=11}
     })
-    optionsframe:SetWidth(260)
+    optionsframe:SetWidth(220)
     optionsframe:SetHeight(600)
     optionsframe:SetPoint("CENTER",UIParent)
     optionsframe:EnableMouse(true)
