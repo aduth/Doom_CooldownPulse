@@ -474,6 +474,7 @@ function DCP:CreateOptionsFrame()
         slider:SetScript("OnValueChanged",function()
             local value = slider:GetValue()
             DCP_Saved[v.value] = value
+            RefreshLocals()
             valuetext:SetText(format("%.1f", value))
             if (DCP:IsMouseEnabled()) then
                 DCP:SetWidth(DCP_Saved.iconSize)
