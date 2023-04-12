@@ -432,8 +432,8 @@ function DCP:CreateOptionsFrame()
       tile=1, tileSize=32, edgeSize=32,
       insets={left=11, right=12, top=12, bottom=11}
     })
-    optionsframe:SetWidth(220)
-    optionsframe:SetHeight(600)
+    optionsframe:SetWidth(230)
+    optionsframe:SetHeight(610)
     optionsframe:SetPoint("CENTER",UIParent)
     optionsframe:EnableMouse(true)
     optionsframe:SetMovable(true)
@@ -457,7 +457,7 @@ function DCP:CreateOptionsFrame()
     for i,v in pairs(sliders) do
         local slider = CreateFrame("slider", "DCP_OptionsFrameSlider"..i, optionsframe, "OptionsSliderTemplate")
         if (i == 1) then
-            slider:SetPoint("TOP",optionsframe,"TOP",0,-40)
+            slider:SetPoint("TOP",optionsframe,"TOP",0,-50)
         else
             slider:SetPoint("TOP",getglobal("DCP_OptionsFrameSlider"..(i-1)),"BOTTOM",0,-35)
         end
@@ -571,7 +571,7 @@ function DCP:CreateOptionsFrame()
         local button = CreateFrame("Button", "DCP_OptionsFrameButton"..i, optionsframe, "UIPanelButtonTemplate")
         button:SetHeight(24)
         button:SetWidth(75)
-        button:SetPoint("BOTTOM", optionsframe, "BOTTOM", ((i%2==0 and -1) or 1)*45, ceil(i/2)*15 + (ceil(i/2)-1)*15)
+        button:SetPoint("BOTTOM", optionsframe, "BOTTOM", ((i%2==0 and -1) or 1)*45, 10 + ceil(i/2)*15 + (ceil(i/2)-1)*15)
         button:SetText(v.text)
         button:SetScript("OnClick", function(self) PlaySound(852) v.func(self) end)
     end
