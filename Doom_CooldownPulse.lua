@@ -157,13 +157,13 @@ local function OnUpdate(_,update)
                 local getCooldownDetails
                 if (v[2] == "spell") then
                     getCooldownDetails = memoize(function()
-                        local start, duration, enabled = GetSpellCooldown(v[3])
+                        local cooldown = C_Spell.GetSpellCooldown(v[3])
                         return {
-                            name = GetSpellInfo(v[3]),
-                            texture = GetSpellTexture(v[3]),
-                            start = start,
-                            duration = duration,
-                            enabled = enabled
+                            name = C_Spell.GetSpellName(v[3]),
+                            texture = C_Spell.GetSpellTexture(v[3]),
+                            start = cooldown.startTime,
+                            duration = cooldown.duration,
+                            enabled = cooldown.isEnabled
                         }
                     end)
                 elseif (v[2] == "item") then
@@ -301,7 +301,7 @@ function DCP:COMBAT_LOG_EVENT_UNFILTERED()
     local _,event,_,_,_,sourceFlags,_,_,_,_,_,spellID = CombatLogGetCurrentEventInfo()
     if (event == "SPELL_CAST_SUCCESS") then
         if (bit.band(sourceFlags,COMBATLOG_OBJECT_TYPE_PET) == COMBATLOG_OBJECT_TYPE_PET and bit.band(sourceFlags,COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE) then
-            local name = GetSpellInfo(spellID)
+            local name = C_Spell.GetSpellName(spellID)
             local index = GetPetActionIndexByName(name)
             if (index and not select(6,GetPetActionInfo(index))) then
                 watching[spellID] = {GetTime(),"pet",index}
@@ -496,12 +496,17 @@ function DCP:CreateOptionsFrame()
     petcolorselect:SetScript("OnEnter",function(self) GameTooltip:SetOwner(self, "ANCHOR_CURSOR") GameTooltip:SetText("Note: Use white if you don't want any overlay for pet cooldowns") end)
     petcolorselect:SetScript("OnLeave",function(self) GameTooltip:Hide() end)
     petcolorselect:SetScript('OnClick', function(self)
-        self.r,self.g,self.b = unpack(DCP_Saved.petOverlay)
-        OpenColorPicker(self)
+        local r, g, b = unpack(DCP_Saved.petOverlay)
+        ColorPickerFrame:SetupColorPickerAndShow({
+            swatchFunc = function(self) DCP_Saved.petOverlay={ColorPickerFrame:GetColorRGB()} petcolorselect:GetNormalTexture():SetVertexColor(ColorPickerFrame:GetColorRGB()) end,
+            cancelFunc = function(self) DCP_Saved.petOverlay={r,g,b} petcolorselect:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay)) end,
+            hasOpacity = false,
+            r = r,
+            g = g,
+            b = b
+        })
         ColorPickerFrame:SetPoint("TOPLEFT",optionsframe,"TOPRIGHT")
-        end)
-    petcolorselect.swatchFunc = function(self) DCP_Saved.petOverlay={ColorPickerFrame:GetColorRGB()} petcolorselect:GetNormalTexture():SetVertexColor(ColorPickerFrame:GetColorRGB()) end
-    petcolorselect.cancelFunc = function(self) DCP_Saved.petOverlay={self.r,self.g,self.b} petcolorselect:GetNormalTexture():SetVertexColor(unpack(DCP_Saved.petOverlay)) end
+    end)
 
     local petcolorselectbg = petcolorselect:CreateTexture(nil, 'BACKGROUND')
     petcolorselectbg:SetWidth(17)
