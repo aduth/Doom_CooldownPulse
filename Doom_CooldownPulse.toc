@@ -4,5 +4,6 @@
 ## Author: Woffle of Dark Iron[US]
 ## SavedVariables: DCP_Saved
 ## SavedVariablesPerCharacter: DCP_SavedPerCharacter
+## IconTexture: 4630441
 
 Doom_CooldownPulse.lua
